@@ -100,7 +100,7 @@ export default function App() {
           className="relative flex min-h-[100svh] items-end overflow-hidden"
         >
           <img
-            src="/demo/superior-1.jpg"
+            src="/demo/hero-closet.jpg"
             alt=""
             className="hero-media absolute inset-0 h-full w-full object-cover"
           />

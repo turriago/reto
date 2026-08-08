@@ -1,3 +1,5 @@
+const stamp = 'v2'
+
 export const DEMO_ITEMS = [
   {
     id: 'demo-top-1',
@@ -5,7 +7,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Blanco',
     season: 'todas',
-    imageUrl: '/demo/superior-1.jpg',
+    imageUrl: `/demo/superior-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
   {
@@ -14,7 +16,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Beige',
     season: 'invierno',
-    imageUrl: '/demo/superior-2.jpg',
+    imageUrl: `/demo/superior-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
   {
@@ -23,7 +25,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Azul',
     season: 'todas',
-    imageUrl: '/demo/inferior-1.jpg',
+    imageUrl: `/demo/inferior-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
   {
@@ -32,7 +34,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Negro',
     season: 'todas',
-    imageUrl: '/demo/inferior-2.jpg',
+    imageUrl: `/demo/inferior-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
   {
@@ -41,7 +43,7 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Blanco',
     season: 'todas',
-    imageUrl: '/demo/calzado-1.jpg',
+    imageUrl: `/demo/calzado-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
   {
@@ -50,7 +52,7 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Café',
     season: 'invierno',
-    imageUrl: '/demo/calzado-2.jpg',
+    imageUrl: `/demo/calzado-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
 ]

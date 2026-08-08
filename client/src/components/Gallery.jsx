@@ -1,4 +1,5 @@
 import { CATEGORY_LABEL, COLORS, SEASONS } from '../lib/constants'
+import InventorySummary from './InventorySummary'
 
 export default function Gallery({
   items,
@@ -81,6 +82,10 @@ export default function Gallery({
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <InventorySummary items={items} />
       </div>
 
       {filtered.length === 0 ? (

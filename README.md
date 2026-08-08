@@ -52,6 +52,23 @@ cp server/.env.example server/.env
 
 Sin credenciales, el upload usa data URL y la app sigue funcionando.
 
+## Supabase (persistencia en la nube)
+
+Copia `client/.env.example` a `client/.env.local`:
+
+```bash
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu_publishable_key
+```
+
+Tablas: `garments` y `favorite_outfits` (con fallback a LocalStorage si falla la nube).
+
+Para crearlas:
+
+```bash
+DATABASE_URL="postgresql://..." node scripts/setup-supabase.mjs
+```
+
 ## Deploy en Netlify
 
 La UI se publica como sitio estático. El upload funciona sin el servidor Express (data URL local).

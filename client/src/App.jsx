@@ -22,6 +22,9 @@ export default function App() {
     isFavorite,
     removeFavorite,
     restoreFavorite,
+    syncing,
+    cloudReady,
+    supabaseEnabled,
   } = useCloset()
 
   const [filters, setFilters] = useState({
@@ -74,7 +77,12 @@ export default function App() {
           >
             Closet Matcher
           </a>
-          <nav className="hidden gap-6 font-display text-sm font-semibold tracking-wide md:flex">
+          <nav className="hidden items-center gap-6 font-display text-sm font-semibold tracking-wide md:flex">
+            {supabaseEnabled && (
+              <span className="rounded-md border border-current/20 px-2 py-1 text-[0.65rem] tracking-[0.14em] uppercase opacity-80">
+                {syncing ? 'Sync…' : cloudReady ? 'Cloud ON' : 'Cloud'}
+              </span>
+            )}
             <a href="#agregar" className="opacity-85 hover:opacity-100">
               Agregar
             </a>

@@ -6,6 +6,12 @@ import {
   saveFavorites,
   saveItems,
 } from '../lib/storage'
+import {
+  itemToRow,
+  rowToItem,
+  supabase,
+  supabaseEnabled,
+} from '../lib/supabase'
 
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)]
@@ -42,6 +48,8 @@ export function useCloset() {
   const [favorites, setFavorites] = useState(() => loadFavorites())
   const [outfit, setOutfit] = useState(null)
   const [outfitKey, setOutfitKey] = useState(0)
+  const [syncing, setSyncing] = useState(false)
+  const [cloudReady, setCloudReady] = useState(false)
 
   useEffect(() => {
     saveItems(items)
@@ -51,11 +59,59 @@ export function useCloset() {
     saveFavorites(favorites)
   }, [favorites])
 
-  function addItem(item) {
+  useEffect(() => {
+    if (!supabaseEnabled) return undefined
+
+    let cancelled = false
+
+    async function hydrate() {
+      setSyncing(true)
+      try {
+        const [{ data: garmentRows, error: garmentError }, { data: favRows, error: favError }] =
+          await Promise.all([
+            supabase
+              .from('garments')
+              .select('*')
+              .order('created_at', { ascending: false }),
+            supabase
+              .from('favorite_outfits')
+              .select('*')
+              .order('saved_at', { ascending: false }),
+          ])
+
+        if (garmentError) throw garmentError
+        if (favError) throw favError
+        if (cancelled) return
+
+        if (garmentRows?.length) {
+          setItems(garmentRows.map(rowToItem))
+        }
+        if (favRows?.length) {
+          setFavorites(favRows.map((row) => row.payload))
+        }
+        setCloudReady(true)
+      } catch (error) {
+        console.warn('Supabase hydrate failed, using local data:', error.message)
+        setCloudReady(false)
+      } finally {
+        if (!cancelled) setSyncing(false)
+      }
+    }
+
+    hydrate()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  async function addItem(item) {
     setItems((prev) => [item, ...prev])
+    if (!supabaseEnabled) return
+    const { error } = await supabase.from('garments').upsert(itemToRow(item))
+    if (error) console.warn('Supabase addItem:', error.message)
   }
 
-  function updateItem(id, updates) {
+  async function updateItem(id, updates) {
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
     )
@@ -81,17 +137,27 @@ export function useCloset() {
         calzado: patchPiece(current.calzado),
       }
     })
+
+    if (!supabaseEnabled) return
+    const current = items.find((item) => item.id === id)
+    const merged = { ...(current || { id }), ...updates, id }
+    const { error } = await supabase.from('garments').upsert(itemToRow(merged))
+    if (error) console.warn('Supabase updateItem:', error.message)
   }
 
-  function loadDemo() {
+  async function loadDemo() {
     setItems((prev) => {
       const demoIds = new Set(DEMO_ITEMS.map((item) => item.id))
       const custom = prev.filter((item) => !demoIds.has(item.id))
       return [...DEMO_ITEMS, ...custom]
     })
+
+    if (!supabaseEnabled) return
+    const { error } = await supabase.from('garments').upsert(DEMO_ITEMS.map(itemToRow))
+    if (error) console.warn('Supabase loadDemo:', error.message)
   }
 
-  function removeItem(id) {
+  async function removeItem(id) {
     setItems((prev) => prev.filter((item) => item.id !== id))
     setFavorites((prev) =>
       prev.filter(
@@ -112,6 +178,10 @@ export function useCloset() {
       }
       return current
     })
+
+    if (!supabaseEnabled) return
+    const { error } = await supabase.from('garments').delete().eq('id', id)
+    if (error) console.warn('Supabase removeItem:', error.message)
   }
 
   function generateOutfit(filters = {}) {
@@ -156,7 +226,7 @@ export function useCloset() {
     return { ok: true, outfit: next }
   }
 
-  function toggleFavorite(currentOutfit) {
+  async function toggleFavorite(currentOutfit) {
     if (!currentOutfit) return
 
     const signature = [
@@ -165,30 +235,39 @@ export function useCloset() {
       currentOutfit.calzado.id,
     ].join('|')
 
-    setFavorites((prev) => {
-      const exists = prev.some(
-        (fav) =>
-          [fav.superior.id, fav.inferior.id, fav.calzado.id].join('|') ===
-          signature
-      )
+    const existing = favorites.find(
+      (fav) =>
+        [fav.superior.id, fav.inferior.id, fav.calzado.id].join('|') ===
+        signature
+    )
 
-      if (exists) {
-        return prev.filter(
-          (fav) =>
-            [fav.superior.id, fav.inferior.id, fav.calzado.id].join('|') !==
-            signature
-        )
+    if (existing) {
+      setFavorites((prev) => prev.filter((fav) => fav.id !== existing.id))
+      if (supabaseEnabled) {
+        const { error } = await supabase
+          .from('favorite_outfits')
+          .delete()
+          .eq('id', existing.id)
+        if (error) console.warn('Supabase remove favorite:', error.message)
       }
+      return
+    }
 
-      return [
-        {
-          ...currentOutfit,
-          id: crypto.randomUUID(),
-          savedAt: new Date().toISOString(),
-        },
-        ...prev,
-      ]
-    })
+    const saved = {
+      ...currentOutfit,
+      id: crypto.randomUUID(),
+      savedAt: new Date().toISOString(),
+    }
+    setFavorites((prev) => [saved, ...prev])
+
+    if (supabaseEnabled) {
+      const { error } = await supabase.from('favorite_outfits').upsert({
+        id: saved.id,
+        payload: saved,
+        saved_at: saved.savedAt,
+      })
+      if (error) console.warn('Supabase add favorite:', error.message)
+    }
   }
 
   function isFavorite(currentOutfit) {
@@ -206,8 +285,11 @@ export function useCloset() {
     )
   }
 
-  function removeFavorite(id) {
+  async function removeFavorite(id) {
     setFavorites((prev) => prev.filter((fav) => fav.id !== id))
+    if (!supabaseEnabled) return
+    const { error } = await supabase.from('favorite_outfits').delete().eq('id', id)
+    if (error) console.warn('Supabase removeFavorite:', error.message)
   }
 
   function restoreFavorite(favorite) {
@@ -227,6 +309,9 @@ export function useCloset() {
     favorites,
     outfit,
     outfitKey,
+    syncing,
+    cloudReady,
+    supabaseEnabled,
     addItem,
     updateItem,
     loadDemo,

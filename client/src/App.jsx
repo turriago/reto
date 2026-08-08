@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Favorites from './components/Favorites'
 import Gallery from './components/Gallery'
 import ItemForm from './components/ItemForm'
 import OutfitGenerator from './components/OutfitGenerator'
+import Toast from './components/Toast'
 import { useCloset } from './hooks/useCloset'
 
 export default function App() {
@@ -27,6 +28,13 @@ export default function App() {
     season: 'todas',
   })
   const [outfitMessage, setOutfitMessage] = useState('')
+  const [toast, setToast] = useState('')
+
+  useEffect(() => {
+    if (!toast) return undefined
+    const timer = setTimeout(() => setToast(''), 2600)
+    return () => clearTimeout(timer)
+  }, [toast])
 
   function handleGenerate() {
     const result = generateOutfit({
@@ -34,6 +42,14 @@ export default function App() {
       season: filters.season,
     })
     setOutfitMessage(result.ok ? '' : result.message)
+    if (result.ok) setToast('Nuevo outfit listo')
+  }
+
+  function handleToggleFavorite() {
+    if (!outfit) return
+    const wasFavorite = isFavorite(outfit)
+    toggleFavorite(outfit)
+    setToast(wasFavorite ? 'Quitado de favoritos' : 'Outfit guardado en favoritos')
   }
 
   return (
@@ -84,6 +100,7 @@ export default function App() {
                   className="btn-primary"
                   onClick={() => {
                     loadDemo()
+                    setToast('Demo cargada: 6 prendas listas')
                     window.location.hash = 'outfit'
                   }}
                 >
@@ -121,26 +138,38 @@ export default function App() {
         </section>
 
         <div className="mx-auto flex max-w-6xl flex-col gap-20 px-4 py-14 md:px-6 md:py-20">
-          <ItemForm onAdd={addItem} />
+          <ItemForm
+            onAdd={(item) => {
+              addItem(item)
+              setToast(`“${item.name}” agregada al closet`)
+            }}
+          />
           <Gallery
             items={items}
             filters={filters}
             onFiltersChange={setFilters}
-            onRemove={removeItem}
+            onRemove={(id) => {
+              removeItem(id)
+              setToast('Prenda eliminada')
+            }}
           />
           <OutfitGenerator
             outfit={outfit}
             outfitKey={outfitKey}
             isFavorite={isFavorite(outfit)}
             onGenerate={handleGenerate}
-            onToggleFavorite={() => toggleFavorite(outfit)}
+            onToggleFavorite={handleToggleFavorite}
             message={outfitMessage}
           />
           <Favorites
             favorites={favorites}
-            onRemove={removeFavorite}
+            onRemove={(id) => {
+              removeFavorite(id)
+              setToast('Favorito eliminado')
+            }}
             onRestore={(fav) => {
               restoreFavorite(fav)
+              setToast('Look restaurado en el generador')
               window.location.hash = 'outfit'
             }}
           />
@@ -150,6 +179,8 @@ export default function App() {
       <footer className="border-t border-line/70 px-4 py-8 text-center text-sm text-ink-soft md:px-6">
         Closet Matcher · Inventario + combinaciones automáticas
       </footer>
+
+      <Toast message={toast} onClose={() => setToast('')} />
     </div>
   )
 }

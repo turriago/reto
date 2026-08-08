@@ -31,9 +31,9 @@ export function useCloset() {
 
   function loadDemo() {
     setItems((prev) => {
-      const existing = new Set(prev.map((item) => item.id))
-      const missing = DEMO_ITEMS.filter((item) => !existing.has(item.id))
-      return missing.length ? [...missing, ...prev] : prev
+      const demoIds = new Set(DEMO_ITEMS.map((item) => item.id))
+      const custom = prev.filter((item) => !demoIds.has(item.id))
+      return [...DEMO_ITEMS, ...custom]
     })
   }
 

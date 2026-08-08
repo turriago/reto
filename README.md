@@ -1,44 +1,53 @@
-# Closet Matcher: Tu Estilista Digital
+# Closet Matcher
 
-Aplicación web para registrar prendas y generar outfits automáticos (superior + inferior + calzado).
+Estilista digital: registra prendas y genera outfits (superior + inferior + calzado).
 
 ## Stack
 
-- **Frontend:** React + Vite + Tailwind CSS
-- **Backend:** Node.js + Express
-- **Imágenes:** Cloudinary (con fallback a data URL si no hay credenciales)
-- **Persistencia:** LocalStorage
+| Capa | Tecnología |
+|------|------------|
+| Frontend | React, Vite, Tailwind CSS |
+| Backend | Node.js, Express |
+| Imágenes | Cloudinary (fallback local) |
+| Datos | LocalStorage |
 
-## Funcionalidades
+## Alcance (YAGNI)
 
-- Formulario para subir imagen y asignar categoría, color y temporada
-- Galería de prendas con filtros
-- Generador de outfit aleatorio
-- Favoritos de looks guardados
+Solo lo pedido del reto:
 
-## Cómo correr
+1. Subir prenda con categoría  
+2. Galería del inventario  
+3. Outfit aleatorio por categoría  
+4. Persistencia básica  
+
+Extras incluidos porque suman puntos: favoritos y filtros por color/temporada.  
+Sin auth, sin DB, sin dashboard innecesario.
+
+## Estructura
+
+```
+client/   # UI React
+server/   # API de upload
+```
+
+## Arranque
 
 ```bash
-# Dependencias
 npm install
 npm install --prefix client
 npm install --prefix server
-
-# Desarrollo (API + frontend)
 npm run dev
 ```
 
-- Frontend: http://localhost:5173
-- API: http://localhost:4000
+- App: http://localhost:5173  
+- API: http://localhost:4000  
 
-### Cloudinary (opcional)
+Demo rápida: botón **Cargar demo rápida** (fotos en `client/public/demo`).
 
-Copia `server/.env.example` a `server/.env` y completa:
+## Cloudinary (opcional)
 
-```
-CLOUDINARY_CLOUD_NAME=...
-CLOUDINARY_API_KEY=...
-CLOUDINARY_API_SECRET=...
+```bash
+cp server/.env.example server/.env
 ```
 
-Sin `.env`, las imágenes se guardan como data URL para que la demo funcione igual.
+Sin credenciales, el upload usa data URL y la app sigue funcionando.

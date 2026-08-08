@@ -5,8 +5,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Blanco',
     season: 'todas',
-    imageUrl:
-      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&h=750&fit=crop',
+    imageUrl: '/demo/superior-1.jpg',
     createdAt: new Date().toISOString(),
   },
   {
@@ -15,8 +14,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Beige',
     season: 'invierno',
-    imageUrl:
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&h=750&fit=crop',
+    imageUrl: '/demo/superior-2.jpg',
     createdAt: new Date().toISOString(),
   },
   {
@@ -25,8 +23,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Azul',
     season: 'todas',
-    imageUrl:
-      'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=750&fit=crop',
+    imageUrl: '/demo/inferior-1.jpg',
     createdAt: new Date().toISOString(),
   },
   {
@@ -35,8 +32,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Negro',
     season: 'todas',
-    imageUrl:
-      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&h=750&fit=crop',
+    imageUrl: '/demo/inferior-2.jpg',
     createdAt: new Date().toISOString(),
   },
   {
@@ -45,8 +41,7 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Blanco',
     season: 'todas',
-    imageUrl:
-      'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&h=750&fit=crop',
+    imageUrl: '/demo/calzado-1.jpg',
     createdAt: new Date().toISOString(),
   },
   {
@@ -55,8 +50,7 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Café',
     season: 'invierno',
-    imageUrl:
-      'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&h=750&fit=crop',
+    imageUrl: '/demo/calzado-2.jpg',
     createdAt: new Date().toISOString(),
   },
 ]

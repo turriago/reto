@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "closet-matcher-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "API de upload para Closet Matcher",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",

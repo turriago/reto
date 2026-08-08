@@ -11,6 +11,32 @@ function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)]
 }
 
+function outfitSignature(outfit) {
+  if (!outfit) return ''
+  return [outfit.superior.id, outfit.inferior.id, outfit.calzado.id].join('|')
+}
+
+function pickRandomOutfit(tops, bottoms, shoes, previousSignature) {
+  const maxAttempts = 12
+  let next = null
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    next = {
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      superior: pickRandom(tops),
+      inferior: pickRandom(bottoms),
+      calzado: pickRandom(shoes),
+    }
+
+    if (outfitSignature(next) !== previousSignature) {
+      return next
+    }
+  }
+
+  return next
+}
+
 export function useCloset() {
   const [items, setItems] = useState(() => loadItems())
   const [favorites, setFavorites] = useState(() => loadFavorites())
@@ -90,13 +116,12 @@ export function useCloset() {
       }
     }
 
-    const next = {
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      superior: pickRandom(tops),
-      inferior: pickRandom(bottoms),
-      calzado: pickRandom(shoes),
-    }
+    const next = pickRandomOutfit(
+      tops,
+      bottoms,
+      shoes,
+      outfitSignature(outfit)
+    )
 
     setOutfit(next)
     setOutfitKey((k) => k + 1)

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Favorites from './components/Favorites'
 import Gallery from './components/Gallery'
 import ItemForm from './components/ItemForm'
+import LookSimulator from './components/LookSimulator'
 import OutfitGenerator from './components/OutfitGenerator'
 import Toast from './components/Toast'
 import { useCloset } from './hooks/useCloset'
@@ -83,6 +84,9 @@ export default function App() {
             <a href="#outfit" className="opacity-85 hover:opacity-100">
               Outfit
             </a>
+            <a href="#simulador" className="opacity-85 hover:opacity-100">
+              Simulación
+            </a>
             <a href="#favoritos" className="opacity-85 hover:opacity-100">
               Favoritos
             </a>
@@ -162,6 +166,14 @@ export default function App() {
             onGenerate={handleGenerate}
             onToggleFavorite={handleToggleFavorite}
             message={outfitMessage}
+          />
+          <LookSimulator
+            outfit={outfit}
+            onNeedOutfit={() => {
+              handleGenerate()
+              setToast('Genera o usa un outfit para simularlo')
+              window.location.hash = 'outfit'
+            }}
           />
           <Favorites
             favorites={favorites}

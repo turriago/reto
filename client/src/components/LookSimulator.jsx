@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
 const ANGLES = [
-  { id: 'frente', label: 'Frente' },
-  { id: 'lado', label: 'Lado' },
-  { id: 'espalda', label: 'Espalda' },
+  { id: 'frente', label: 'Frente', demo: '/demo/persona-frente.jpg' },
+  { id: 'lado', label: 'Lado', demo: '/demo/persona-lado.jpg' },
+  { id: 'espalda', label: 'Espalda', demo: '/demo/persona-espalda.jpg' },
 ]
 
 const STEPS = [
@@ -22,7 +22,7 @@ function readFile(file) {
   })
 }
 
-export default function LookSimulator({ outfit, onNeedOutfit }) {
+export default function LookSimulator({ outfit, onPrepareDemo }) {
   const [photos, setPhotos] = useState({
     frente: '',
     lado: '',
@@ -33,14 +33,23 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
   const [stepLabel, setStepLabel] = useState('')
   const [resultReady, setResultReady] = useState(false)
   const timers = useRef([])
+  const pendingSim = useRef(false)
 
   useEffect(() => {
     return () => timers.current.forEach(clearTimeout)
   }, [])
 
+  useEffect(() => {
+    if (pendingSim.current && outfit) {
+      pendingSim.current = false
+      startProcessing()
+    }
+  }, [outfit])
+
   const hasPhoto = Boolean(photos.frente || photos.lado || photos.espalda)
   const mainPhoto =
     photos[activeAngle] || photos.frente || photos.lado || photos.espalda
+  const photoCount = ANGLES.filter((angle) => photos[angle.id]).length
 
   async function handlePhoto(angleId, file) {
     if (!file) return
@@ -50,13 +59,18 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
     setResultReady(false)
   }
 
-  function runSimulation() {
-    if (!hasPhoto) return
-    if (!outfit) {
-      onNeedOutfit?.()
-      return
-    }
+  function loadDemoPhotos() {
+    setPhotos({
+      frente: ANGLES[0].demo,
+      lado: ANGLES[1].demo,
+      espalda: ANGLES[2].demo,
+    })
+    setActiveAngle('frente')
+    setResultReady(false)
+    setStatus('idle')
+  }
 
+  function startProcessing() {
     timers.current.forEach(clearTimeout)
     timers.current = []
     setStatus('processing')
@@ -75,6 +89,30 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
     timers.current.push(done)
   }
 
+  function runSimulation() {
+    if (!hasPhoto) {
+      loadDemoPhotos()
+    }
+
+    if (!outfit) {
+      pendingSim.current = true
+      onPrepareDemo?.()
+      return
+    }
+
+    if (!hasPhoto) {
+      // photos just loaded synchronously above; continue
+    }
+
+    startProcessing()
+  }
+
+  function prepareFullDemo() {
+    loadDemoPhotos()
+    pendingSim.current = true
+    onPrepareDemo?.()
+  }
+
   return (
     <section id="simulador" className="animate-rise">
       <div className="mb-8">
@@ -88,6 +126,30 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
           Sube o toma fotos en varios ángulos y genera una vista previa del
           outfit sobre tu silueta.
         </p>
+      </div>
+
+      <div className="mb-5 flex flex-wrap gap-2 text-sm">
+        <span
+          className={`rounded-md px-3 py-1 font-display text-xs font-semibold tracking-wide uppercase ${
+            photoCount > 0 ? 'bg-saffron/20 text-ink' : 'bg-white/60 text-ink-soft'
+          }`}
+        >
+          1. Fotos {photoCount}/3
+        </span>
+        <span
+          className={`rounded-md px-3 py-1 font-display text-xs font-semibold tracking-wide uppercase ${
+            outfit ? 'bg-saffron/20 text-ink' : 'bg-white/60 text-ink-soft'
+          }`}
+        >
+          2. Outfit {outfit ? 'listo' : 'pendiente'}
+        </span>
+        <span
+          className={`rounded-md px-3 py-1 font-display text-xs font-semibold tracking-wide uppercase ${
+            resultReady ? 'bg-saffron/20 text-ink' : 'bg-white/60 text-ink-soft'
+          }`}
+        >
+          3. Simulación {resultReady ? 'lista' : 'pendiente'}
+        </span>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
@@ -131,17 +193,26 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
             <button
               type="button"
               className="btn-primary"
-              disabled={!hasPhoto || status === 'processing'}
+              disabled={status === 'processing'}
               onClick={runSimulation}
             >
               {status === 'processing' ? 'Procesando…' : 'Generar simulación IA'}
             </button>
-            {!outfit && (
-              <button type="button" className="btn-ghost-ink" onClick={onNeedOutfit}>
-                Primero genera un outfit
-              </button>
-            )}
+            <button
+              type="button"
+              className="btn-ghost-ink"
+              disabled={status === 'processing'}
+              onClick={prepareFullDemo}
+            >
+              Demo completa
+            </button>
           </div>
+
+          <p className="text-sm text-ink-soft italic">
+            Tip: usa <strong>Demo completa</strong> para cargar fotos + outfit y
+            simular al instante. O sube tus propias fotos en Frente / Lado /
+            Espalda.
+          </p>
 
           {status === 'processing' && (
             <p className="font-display text-sm font-semibold tracking-wide text-saffron">
@@ -157,7 +228,7 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
                 Tu espejo digital
               </p>
               <p className="mt-2 max-w-xs text-porcelain/70 italic">
-                Sube una foto y genera la simulación del look.
+                Sube una foto o pulsa Demo completa.
               </p>
             </div>
           ) : (

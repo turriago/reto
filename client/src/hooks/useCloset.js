@@ -146,15 +146,18 @@ export function useCloset() {
   }
 
   async function loadDemo() {
-    setItems((prev) => {
+    const nextItems = (() => {
       const demoIds = new Set(DEMO_ITEMS.map((item) => item.id))
-      const custom = prev.filter((item) => !demoIds.has(item.id))
+      const custom = items.filter((item) => !demoIds.has(item.id))
       return [...DEMO_ITEMS, ...custom]
-    })
+    })()
 
-    if (!supabaseEnabled) return
+    setItems(nextItems)
+
+    if (!supabaseEnabled) return nextItems
     const { error } = await supabase.from('garments').upsert(DEMO_ITEMS.map(itemToRow))
     if (error) console.warn('Supabase loadDemo:', error.message)
+    return nextItems
   }
 
   async function removeItem(id) {
@@ -184,9 +187,9 @@ export function useCloset() {
     if (error) console.warn('Supabase removeItem:', error.message)
   }
 
-  function generateOutfit(filters = {}) {
+  function generateOutfit(filters = {}, sourceItems = items) {
     const byCategory = (category) =>
-      items.filter((item) => {
+      sourceItems.filter((item) => {
         if (item.category !== category) return false
         if (filters.color && filters.color !== 'Todos' && item.color !== filters.color) {
           return false
@@ -304,6 +307,11 @@ export function useCloset() {
     setOutfitKey((k) => k + 1)
   }
 
+  async function prepareSimulatorDemo(filters = {}) {
+    const nextItems = await loadDemo()
+    return generateOutfit(filters, nextItems || DEMO_ITEMS)
+  }
+
   return {
     items,
     favorites,
@@ -315,6 +323,7 @@ export function useCloset() {
     addItem,
     updateItem,
     loadDemo,
+    prepareSimulatorDemo,
     removeItem,
     generateOutfit,
     toggleFavorite,

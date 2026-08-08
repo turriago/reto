@@ -22,6 +22,7 @@ export default function App() {
     isFavorite,
     removeFavorite,
     restoreFavorite,
+    prepareSimulatorDemo,
     syncing,
     cloudReady,
     supabaseEnabled,
@@ -177,10 +178,17 @@ export default function App() {
           />
           <LookSimulator
             outfit={outfit}
-            onNeedOutfit={() => {
-              handleGenerate()
-              setToast('Genera o usa un outfit para simularlo')
-              window.location.hash = 'outfit'
+            onPrepareDemo={async () => {
+              const result = await prepareSimulatorDemo({
+                color: filters.color,
+                season: filters.season,
+              })
+              if (result.ok) {
+                setOutfitMessage('')
+                setToast('Demo lista: fotos + outfit para simular')
+              } else {
+                setToast(result.message)
+              }
             }}
           />
           <Favorites

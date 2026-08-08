@@ -23,13 +23,13 @@ function EditForm({ item, onSave, onCancel }) {
       }}
     >
       <input
-        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        className="w-full rounded-sm border border-line bg-white/80 px-2 py-1.5 text-sm"
         value={draft.name}
         onChange={(e) => setDraft({ ...draft, name: e.target.value })}
         aria-label="Nombre"
       />
       <select
-        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        className="w-full rounded-sm border border-line bg-white/80 px-2 py-1.5 text-sm"
         value={draft.category}
         onChange={(e) => setDraft({ ...draft, category: e.target.value })}
         aria-label="Categoría"
@@ -41,7 +41,7 @@ function EditForm({ item, onSave, onCancel }) {
         ))}
       </select>
       <select
-        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        className="w-full rounded-sm border border-line bg-white/80 px-2 py-1.5 text-sm"
         value={draft.color}
         onChange={(e) => setDraft({ ...draft, color: e.target.value })}
         aria-label="Color"
@@ -53,7 +53,7 @@ function EditForm({ item, onSave, onCancel }) {
         ))}
       </select>
       <select
-        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        className="w-full rounded-sm border border-line bg-white/80 px-2 py-1.5 text-sm"
         value={draft.season}
         onChange={(e) => setDraft({ ...draft, season: e.target.value })}
         aria-label="Temporada"
@@ -65,13 +65,16 @@ function EditForm({ item, onSave, onCancel }) {
         ))}
       </select>
       <div className="flex gap-2 pt-1">
-        <button type="submit" className="text-xs font-semibold text-sage-deep hover:underline">
+        <button
+          type="submit"
+          className="font-display text-xs font-semibold tracking-wide text-saffron hover:underline"
+        >
           Guardar
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="text-xs font-semibold text-ink-soft hover:underline"
+          className="font-display text-xs font-semibold tracking-wide text-ink-soft hover:underline"
         >
           Cancelar
         </button>
@@ -108,22 +111,22 @@ export default function Gallery({
 
   return (
     <section id="galeria" className="animate-rise-delay-2">
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold tracking-wide text-sage uppercase">
+          <p className="section-mark font-display text-xs font-semibold tracking-[0.22em] text-saffron uppercase">
             Closet
           </p>
-          <h2 className="mt-1 font-display text-3xl text-ink md:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-ink md:text-5xl">
             Tus prendas
           </h2>
-          <p className="mt-2 text-ink-soft">
+          <p className="mt-3 text-lg text-ink-soft italic">
             {filtered.length} de {items.length} prendas visibles
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <select
-            className="rounded-xl border border-line bg-white/70 px-3 py-2 text-sm"
+            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
             value={filters.category}
             onChange={(e) =>
               onFiltersChange({ ...filters, category: e.target.value })
@@ -136,7 +139,7 @@ export default function Gallery({
           </select>
 
           <select
-            className="rounded-xl border border-line bg-white/70 px-3 py-2 text-sm"
+            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
             value={filters.color}
             onChange={(e) =>
               onFiltersChange({ ...filters, color: e.target.value })
@@ -151,7 +154,7 @@ export default function Gallery({
           </select>
 
           <select
-            className="rounded-xl border border-line bg-white/70 px-3 py-2 text-sm"
+            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
             value={filters.season}
             onChange={(e) =>
               onFiltersChange({ ...filters, season: e.target.value })
@@ -171,25 +174,25 @@ export default function Gallery({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-line bg-white/40 px-6 py-14 text-center">
-          <p className="font-display text-2xl text-ink">Closet vacío</p>
-          <p className="mt-2 text-ink-soft">
+        <div className="rounded-sm border border-line bg-white/35 px-6 py-16 text-center">
+          <p className="font-display text-3xl font-bold text-ink">Closet vacío</p>
+          <p className="mt-3 text-ink-soft italic">
             Agrega tu primera prenda para empezar a combinar.
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((item, index) => (
             <article
               key={item.id}
-              className="group overflow-hidden rounded-2xl border border-line/80 bg-white/55 transition duration-300 hover:-translate-y-1"
+              className="group overflow-hidden rounded-sm border border-line/70 bg-white/40 transition duration-300 hover:-translate-y-1"
               style={{ animationDelay: `${index * 40}ms` }}
             >
               <div className="aspect-[4/5] overflow-hidden bg-mist">
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               </div>
               <div className="space-y-2 p-4">
@@ -205,27 +208,27 @@ export default function Gallery({
                 ) : (
                   <>
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-semibold leading-tight text-ink">
+                      <h3 className="font-display font-semibold leading-tight text-ink">
                         {item.name}
                       </h3>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         <button
                           type="button"
                           onClick={() => setEditingId(item.id)}
-                          className="text-xs font-semibold text-sage-deep hover:underline"
+                          className="font-display text-xs font-semibold tracking-wide text-saffron hover:underline"
                         >
                           Editar
                         </button>
                         <button
                           type="button"
                           onClick={() => onRemove(item.id)}
-                          className="text-xs font-semibold text-clay hover:underline"
+                          className="font-display text-xs font-semibold tracking-wide text-clay hover:underline"
                         >
                           Quitar
                         </button>
                       </div>
                     </div>
-                    <p className="text-sm text-ink-soft">
+                    <p className="text-sm text-ink-soft italic">
                       {CATEGORY_LABEL[item.category]} · {item.color}
                     </p>
                   </>

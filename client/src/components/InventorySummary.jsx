@@ -12,21 +12,22 @@ export default function InventorySummary({ items }) {
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div className="rounded-2xl border border-line bg-white/55 px-4 py-3">
-        <p className="text-xs font-semibold tracking-wide text-sage uppercase">
+      <div className="border-b-2 border-saffron bg-transparent px-1 py-2">
+        <p className="font-display text-[0.68rem] font-semibold tracking-[0.18em] text-ink-soft uppercase">
           Total
         </p>
-        <p className="mt-1 font-display text-3xl text-ink">{items.length}</p>
+        <p className="mt-1 font-display text-4xl font-bold text-ink">
+          {items.length}
+        </p>
       </div>
       {counts.map((stat) => (
-        <div
-          key={stat.id}
-          className="rounded-2xl border border-line bg-white/55 px-4 py-3"
-        >
-          <p className="text-xs font-semibold tracking-wide text-sage uppercase">
+        <div key={stat.id} className="border-b border-line px-1 py-2">
+          <p className="font-display text-[0.68rem] font-semibold tracking-[0.18em] text-ink-soft uppercase">
             {stat.label}
           </p>
-          <p className="mt-1 font-display text-3xl text-ink">{stat.count}</p>
+          <p className="mt-1 font-display text-4xl font-bold text-ink">
+            {stat.count}
+          </p>
         </div>
       ))}
     </div>

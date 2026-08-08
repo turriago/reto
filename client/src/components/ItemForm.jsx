@@ -67,33 +67,33 @@ export default function ItemForm({ onAdd }) {
 
   return (
     <section id="agregar" className="animate-rise-delay-1">
-      <div className="mb-6">
-        <p className="text-sm font-semibold tracking-wide text-sage uppercase">
+      <div className="mb-8">
+        <p className="section-mark font-display text-xs font-semibold tracking-[0.22em] text-saffron uppercase">
           Inventario
         </p>
-        <h2 className="mt-1 font-display text-3xl text-ink md:text-4xl">
+        <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-ink md:text-5xl">
           Registra una prenda
         </h2>
-        <p className="mt-2 max-w-xl text-ink-soft">
+        <p className="mt-3 max-w-xl text-lg text-ink-soft italic">
           Sube la foto, elige categoría y deja que el estilista combine por ti.
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-6 lg:grid-cols-[220px_1fr]"
+        className="grid gap-6 lg:grid-cols-[240px_1fr]"
       >
-        <label className="group relative flex min-h-56 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-line bg-white/50 transition hover:border-sage">
+        <label className="group relative flex min-h-64 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-sm border border-dashed border-line bg-white/40 transition hover:border-saffron">
           {preview ? (
             <img
               src={preview}
               alt="Vista previa"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
             />
           ) : (
             <div className="px-4 text-center">
-              <p className="font-semibold text-ink">Subir imagen</p>
-              <p className="mt-1 text-sm text-ink-soft">JPG o PNG · máx 8MB</p>
+              <p className="font-display font-semibold text-ink">Subir imagen</p>
+              <p className="mt-1 text-sm text-ink-soft italic">JPG o PNG · máx 8MB</p>
             </div>
           )}
           <input

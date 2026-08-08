@@ -104,25 +104,25 @@ export default function App() {
             alt=""
             className="hero-media absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(200,150,62,0.22),transparent_45%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_85%,rgba(200,150,62,0.28),transparent_40%)]" />
 
-          <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-32 md:px-6 md:pb-24">
-            <div className="animate-rise max-w-2xl">
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-14 pt-28 md:px-6 md:pb-20">
+            <div className="animate-rise max-w-xl">
               <p className="font-display text-xs font-semibold tracking-[0.28em] text-saffron uppercase">
                 Atelier digital
               </p>
-              <h1 className="mt-4 font-display text-[clamp(3.4rem,10vw,6.8rem)] leading-[0.9] font-extrabold tracking-tight text-porcelain">
+              <h1 className="mt-4 font-display text-[clamp(3.2rem,9vw,6.2rem)] leading-[0.92] font-extrabold tracking-tight text-porcelain">
                 Closet Matcher
               </h1>
-              <p className="mt-5 max-w-md font-sans text-lg leading-relaxed text-porcelain/85 italic md:text-xl">
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-porcelain/90 italic md:text-xl">
                 Combina lo que ya tienes. Cada mañana, un look nuevo sin
                 comprar de más.
               </p>
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <button
                   type="button"
-                  className="btn-primary"
+                  className="btn-hero"
                   onClick={() => {
                     loadDemo()
                     setToast('Demo cargada: 6 prendas listas')
@@ -139,7 +139,7 @@ export default function App() {
           </div>
         </section>
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-24 px-4 py-16 md:px-6 md:py-24">
+        <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-14 md:gap-20 md:px-6 md:py-20">
           <ItemForm
             onAdd={(item) => {
               addItem(item)

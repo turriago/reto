@@ -126,7 +126,7 @@ export default function Gallery({
 
         <div className="flex flex-wrap gap-2">
           <select
-            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
+            className="select-pill"
             value={filters.category}
             onChange={(e) =>
               onFiltersChange({ ...filters, category: e.target.value })
@@ -139,7 +139,7 @@ export default function Gallery({
           </select>
 
           <select
-            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
+            className="select-pill"
             value={filters.color}
             onChange={(e) =>
               onFiltersChange({ ...filters, color: e.target.value })
@@ -154,7 +154,7 @@ export default function Gallery({
           </select>
 
           <select
-            className="rounded-sm border border-line bg-white/70 px-3 py-2 text-sm"
+            className="select-pill"
             value={filters.season}
             onChange={(e) =>
               onFiltersChange({ ...filters, season: e.target.value })
@@ -174,7 +174,7 @@ export default function Gallery({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-sm border border-line bg-white/35 px-6 py-16 text-center">
+        <div className="panel rounded-2xl px-6 py-16 text-center">
           <p className="font-display text-3xl font-bold text-ink">Closet vacío</p>
           <p className="mt-3 text-ink-soft italic">
             Agrega tu primera prenda para empezar a combinar.
@@ -185,7 +185,7 @@ export default function Gallery({
           {filtered.map((item, index) => (
             <article
               key={item.id}
-              className="group overflow-hidden rounded-sm border border-line/70 bg-white/40 transition duration-300 hover:-translate-y-1"
+              className="garment-tile group"
               style={{ animationDelay: `${index * 40}ms` }}
             >
               <div className="aspect-[4/5] overflow-hidden bg-mist">

@@ -90,15 +90,15 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="space-y-4">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
+        <div className="panel space-y-5 rounded-2xl p-4 md:p-5">
           <div className="grid gap-3 sm:grid-cols-3">
             {ANGLES.map((angle) => (
               <label
                 key={angle.id}
-                className={`relative flex min-h-36 cursor-pointer flex-col overflow-hidden rounded-sm border ${
+                className={`relative flex min-h-40 cursor-pointer flex-col overflow-hidden rounded-xl border ${
                   photos[angle.id] ? 'border-saffron' : 'border-dashed border-line'
-                } bg-white/40`}
+                } bg-white/60 transition hover:border-saffron/70`}
               >
                 {photos[angle.id] ? (
                   <img
@@ -150,11 +150,14 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
           )}
         </div>
 
-        <div className="relative min-h-[420px] overflow-hidden rounded-sm border border-line bg-ink">
+        <div className="relative min-h-[460px] overflow-hidden rounded-2xl border border-ink/20 bg-ink shadow-[0_20px_60px_rgba(20,24,33,0.18)]">
           {!mainPhoto ? (
-            <div className="flex h-full min-h-[420px] items-center justify-center px-6 text-center">
-              <p className="max-w-xs font-display text-xl text-porcelain/80">
-                Aquí aparecerá tu simulación
+            <div className="flex h-full min-h-[460px] flex-col items-center justify-center px-6 text-center">
+              <p className="font-display text-2xl font-bold text-porcelain">
+                Tu espejo digital
+              </p>
+              <p className="mt-2 max-w-xs text-porcelain/70 italic">
+                Sube una foto y genera la simulación del look.
               </p>
             </div>
           ) : (
@@ -163,10 +166,10 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
                 src={mainPhoto}
                 alt="Simulación de persona"
                 className={`absolute inset-0 h-full w-full object-cover transition duration-700 ${
-                  resultReady ? 'scale-105 opacity-70' : 'opacity-90'
+                  resultReady ? 'scale-[1.03] opacity-75' : 'opacity-95'
                 }`}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
 
               {status === 'processing' && <div className="ai-scan" />}
 
@@ -176,13 +179,13 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
                     <p className="font-display text-xs font-semibold tracking-[0.2em] text-saffron uppercase">
                       Vista previa del look
                     </p>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {ANGLES.filter((angle) => photos[angle.id]).map((angle) => (
                         <button
                           key={angle.id}
                           type="button"
                           onClick={() => setActiveAngle(angle.id)}
-                          className={`px-2 py-1 font-display text-[0.65rem] font-semibold tracking-wide uppercase ${
+                          className={`rounded-md px-2.5 py-1 font-display text-[0.65rem] font-semibold tracking-wide uppercase ${
                             activeAngle === angle.id
                               ? 'bg-saffron text-ink'
                               : 'bg-porcelain/15 text-porcelain'
@@ -194,12 +197,12 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-2.5">
                     {[outfit.superior, outfit.inferior, outfit.calzado].map(
                       (piece, index) => (
                         <div
                           key={piece.id}
-                          className="animate-outfit overflow-hidden border border-porcelain/25 bg-ink/55 backdrop-blur-sm"
+                          className="animate-outfit overflow-hidden rounded-xl border border-porcelain/20 bg-ink/60 backdrop-blur-md"
                           style={{ animationDelay: `${index * 90}ms` }}
                         >
                           <div className="aspect-[3/4]">
@@ -220,7 +223,7 @@ export default function LookSimulator({ outfit, onNeedOutfit }) {
               )}
 
               {status === 'done' && (
-                <p className="absolute top-4 left-4 z-10 border border-saffron/50 bg-ink/70 px-3 py-1 font-display text-[0.65rem] font-semibold tracking-[0.18em] text-saffron uppercase">
+                <p className="absolute top-4 left-4 z-10 rounded-md border border-saffron/50 bg-ink/75 px-3 py-1 font-display text-[0.65rem] font-semibold tracking-[0.18em] text-saffron uppercase">
                   Simulación lista
                 </p>
               )}

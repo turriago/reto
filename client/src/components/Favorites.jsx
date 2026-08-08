@@ -20,7 +20,7 @@ export default function Favorites({ favorites, onRemove, onRestore }) {
           {favorites.map((fav) => (
             <article
               key={fav.id}
-              className="rounded-sm border border-line bg-white/40 p-4 md:p-5"
+              className="panel rounded-2xl p-4 md:p-5"
             >
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <p className="font-display text-xs font-semibold tracking-[0.14em] text-ink-soft uppercase">

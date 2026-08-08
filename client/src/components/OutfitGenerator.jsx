@@ -3,7 +3,7 @@ import { CATEGORY_LABEL } from '../lib/constants'
 function Piece({ item, label, delay }) {
   return (
     <div
-      className="animate-outfit overflow-hidden rounded-sm border border-line/80 bg-white/50"
+      className="garment-tile animate-outfit"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="aspect-[4/5] overflow-hidden bg-mist">
@@ -68,13 +68,13 @@ export default function OutfitGenerator({
       </div>
 
       {message && (
-        <p className="mb-4 rounded-sm border border-clay/30 bg-white/60 px-4 py-3 text-sm font-medium text-clay">
+        <p className="mb-4 rounded-xl border border-clay/30 bg-white/70 px-4 py-3 text-sm font-medium text-clay">
           {message}
         </p>
       )}
 
       {!outfit ? (
-        <div className="rounded-sm border border-line bg-white/35 px-6 py-20 text-center">
+        <div className="panel rounded-2xl px-6 py-16 text-center md:py-20">
           <p className="font-display text-3xl font-bold text-ink">
             Tu próximo look espera un clic
           </p>
@@ -83,7 +83,7 @@ export default function OutfitGenerator({
           </p>
         </div>
       ) : (
-        <div key={outfitKey} className="grid gap-5 md:grid-cols-3">
+        <div key={outfitKey} className="grid gap-4 md:grid-cols-3 md:gap-5">
           <Piece item={outfit.superior} label="Superior" delay={0} />
           <Piece item={outfit.inferior} label="Inferior" delay={80} />
           <Piece item={outfit.calzado} label="Calzado" delay={160} />

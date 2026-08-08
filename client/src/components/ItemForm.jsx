@@ -83,7 +83,7 @@ export default function ItemForm({ onAdd }) {
         onSubmit={handleSubmit}
         className="grid gap-6 lg:grid-cols-[240px_1fr]"
       >
-        <label className="group relative flex min-h-64 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-sm border border-dashed border-line bg-white/40 transition hover:border-saffron">
+        <label className="group relative flex min-h-64 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-line bg-white/50 transition hover:border-saffron">
           {preview ? (
             <img
               src={preview}

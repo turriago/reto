@@ -18,6 +18,7 @@ export default function App() {
     toggleFavorite,
     isFavorite,
     removeFavorite,
+    restoreFavorite,
   } = useCloset()
 
   const [filters, setFilters] = useState({
@@ -135,7 +136,14 @@ export default function App() {
             onToggleFavorite={() => toggleFavorite(outfit)}
             message={outfitMessage}
           />
-          <Favorites favorites={favorites} onRemove={removeFavorite} />
+          <Favorites
+            favorites={favorites}
+            onRemove={removeFavorite}
+            onRestore={(fav) => {
+              restoreFavorite(fav)
+              window.location.hash = 'outfit'
+            }}
+          />
         </div>
       </main>
 

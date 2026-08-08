@@ -1,4 +1,4 @@
-export default function Favorites({ favorites, onRemove }) {
+export default function Favorites({ favorites, onRemove, onRestore }) {
   return (
     <section id="favoritos" className="animate-rise">
       <div className="mb-6">
@@ -22,7 +22,7 @@ export default function Favorites({ favorites, onRemove }) {
               key={fav.id}
               className="rounded-2xl border border-line bg-white/50 p-4"
             >
-              <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-ink-soft">
                   Guardado{' '}
                   {new Date(fav.savedAt || fav.createdAt).toLocaleDateString(
@@ -30,13 +30,22 @@ export default function Favorites({ favorites, onRemove }) {
                     { day: 'numeric', month: 'short' }
                   )}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => onRemove(fav.id)}
-                  className="text-xs font-semibold text-clay hover:underline"
-                >
-                  Eliminar
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => onRestore(fav)}
+                    className="text-xs font-semibold text-sage-deep hover:underline"
+                  >
+                    Usar look
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(fav.id)}
+                    className="text-xs font-semibold text-clay hover:underline"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[fav.superior, fav.inferior, fav.calzado].map((piece) => (

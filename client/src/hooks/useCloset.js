@@ -182,6 +182,18 @@ export function useCloset() {
     setFavorites((prev) => prev.filter((fav) => fav.id !== id))
   }
 
+  function restoreFavorite(favorite) {
+    if (!favorite) return
+    setOutfit({
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      superior: favorite.superior,
+      inferior: favorite.inferior,
+      calzado: favorite.calzado,
+    })
+    setOutfitKey((k) => k + 1)
+  }
+
   return {
     items,
     favorites,
@@ -194,5 +206,6 @@ export function useCloset() {
     toggleFavorite,
     isFavorite,
     removeFavorite,
+    restoreFavorite,
   }
 }

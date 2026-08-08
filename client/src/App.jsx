@@ -30,12 +30,22 @@ export default function App() {
   })
   const [outfitMessage, setOutfitMessage] = useState('')
   const [toast, setToast] = useState('')
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     if (!toast) return undefined
     const timer = setTimeout(() => setToast(''), 2600)
     return () => clearTimeout(timer)
   }, [toast])
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > window.innerHeight * 0.7)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   function handleGenerate() {
     const result = generateOutfit({
@@ -55,22 +65,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-line/70 bg-fog/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
-          <a href="#inicio" className="font-display text-xl tracking-tight text-ink">
+      <header className={`site-header ${scrolled ? '' : 'is-hero'}`}>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-6">
+          <a
+            href="#inicio"
+            className="font-display text-lg font-bold tracking-tight md:text-xl"
+          >
             Closet Matcher
           </a>
-          <nav className="hidden gap-5 text-sm font-semibold text-ink-soft md:flex">
-            <a href="#agregar" className="hover:text-ink">
+          <nav className="hidden gap-6 font-display text-sm font-semibold tracking-wide md:flex">
+            <a href="#agregar" className="opacity-85 hover:opacity-100">
               Agregar
             </a>
-            <a href="#galeria" className="hover:text-ink">
+            <a href="#galeria" className="opacity-85 hover:opacity-100">
               Galería
             </a>
-            <a href="#outfit" className="hover:text-ink">
+            <a href="#outfit" className="opacity-85 hover:opacity-100">
               Outfit
             </a>
-            <a href="#favoritos" className="hover:text-ink">
+            <a href="#favoritos" className="opacity-85 hover:opacity-100">
               Favoritos
             </a>
           </nav>
@@ -80,22 +93,29 @@ export default function App() {
       <main>
         <section
           id="inicio"
-          className="relative overflow-hidden border-b border-line/60"
+          className="relative flex min-h-[100svh] items-end overflow-hidden"
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(95,115,88,0.18),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(196,122,90,0.14),transparent_35%)]" />
-          <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.1fr_0.9fr] md:px-6 md:py-24">
-            <div className="animate-rise">
-              <p className="text-sm font-semibold tracking-[0.18em] text-sage uppercase">
-                Tu estilista digital
+          <img
+            src="/demo/superior-1.jpg"
+            alt=""
+            className="hero-media absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(200,150,62,0.22),transparent_45%)]" />
+
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-32 md:px-6 md:pb-24">
+            <div className="animate-rise max-w-2xl">
+              <p className="font-display text-xs font-semibold tracking-[0.28em] text-saffron uppercase">
+                Atelier digital
               </p>
-              <h1 className="mt-3 font-display text-5xl leading-[0.95] text-ink md:text-7xl">
+              <h1 className="mt-4 font-display text-[clamp(3.4rem,10vw,6.8rem)] leading-[0.9] font-extrabold tracking-tight text-porcelain">
                 Closet Matcher
               </h1>
-              <p className="mt-5 max-w-lg text-lg text-ink-soft">
-                Registra tus prendas y desbloquea combinaciones nuevas cada
-                mañana — sin reinventar el armario.
+              <p className="mt-5 max-w-md font-sans text-lg leading-relaxed text-porcelain/85 italic md:text-xl">
+                Combina lo que ya tienes. Cada mañana, un look nuevo sin
+                comprar de más.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-9 flex flex-wrap gap-3">
                 <button
                   type="button"
                   className="btn-primary"
@@ -112,33 +132,10 @@ export default function App() {
                 </a>
               </div>
             </div>
-
-            <div className="animate-rise-delay-1 relative hidden min-h-72 md:block">
-              <div className="absolute inset-6 rounded-[2rem] bg-sage/15" />
-              <div className="absolute inset-0 overflow-hidden rounded-[2rem] border border-line bg-gradient-to-br from-white/70 to-mist/80 p-8 shadow-[0_30px_80px_rgba(26,29,26,0.08)]">
-                <p className="font-display text-3xl text-ink">Look del día</p>
-                <p className="mt-3 max-w-xs text-ink-soft">
-                  Superior + inferior + calzado, elegidos al azar desde tu
-                  inventario real.
-                </p>
-                <div className="mt-8 grid grid-cols-3 gap-3">
-                  {['Superior', 'Inferior', 'Calzado'].map((label, i) => (
-                    <div
-                      key={label}
-                      className="aspect-[3/4] rounded-xl bg-sage/20"
-                      style={{
-                        animation: 'soft-pulse 3.5s ease-in-out infinite',
-                        animationDelay: `${i * 0.35}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-20 px-4 py-14 md:px-6 md:py-20">
+        <div className="mx-auto flex max-w-6xl flex-col gap-24 px-4 py-16 md:px-6 md:py-24">
           <ItemForm
             onAdd={(item) => {
               addItem(item)
@@ -181,8 +178,13 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="border-t border-line/70 px-4 py-8 text-center text-sm text-ink-soft md:px-6">
-        Closet Matcher · Inventario + combinaciones automáticas
+      <footer className="border-t border-line px-4 py-10 text-center md:px-6">
+        <p className="font-display text-sm font-semibold tracking-[0.18em] text-ink uppercase">
+          Closet Matcher
+        </p>
+        <p className="mt-2 text-ink-soft italic">
+          Inventario + combinaciones con estilo de atelier
+        </p>
       </footer>
 
       <Toast message={toast} onClose={() => setToast('')} />

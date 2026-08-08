@@ -1,12 +1,94 @@
-import { CATEGORY_LABEL, COLORS, SEASONS } from '../lib/constants'
+import { useState } from 'react'
+import { CATEGORIES, CATEGORY_LABEL, COLORS, SEASONS } from '../lib/constants'
 import InventorySummary from './InventorySummary'
+
+function EditForm({ item, onSave, onCancel }) {
+  const [draft, setDraft] = useState({
+    name: item.name,
+    category: item.category,
+    color: item.color,
+    season: item.season,
+  })
+
+  return (
+    <form
+      className="space-y-2"
+      onSubmit={(event) => {
+        event.preventDefault()
+        if (!draft.name.trim()) return
+        onSave({
+          ...draft,
+          name: draft.name.trim(),
+        })
+      }}
+    >
+      <input
+        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        value={draft.name}
+        onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+        aria-label="Nombre"
+      />
+      <select
+        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        value={draft.category}
+        onChange={(e) => setDraft({ ...draft, category: e.target.value })}
+        aria-label="Categoría"
+      >
+        {CATEGORIES.map((category) => (
+          <option key={category.id} value={category.id}>
+            {category.label}
+          </option>
+        ))}
+      </select>
+      <select
+        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        value={draft.color}
+        onChange={(e) => setDraft({ ...draft, color: e.target.value })}
+        aria-label="Color"
+      >
+        {COLORS.map((color) => (
+          <option key={color} value={color}>
+            {color}
+          </option>
+        ))}
+      </select>
+      <select
+        className="w-full rounded-lg border border-line bg-white/80 px-2 py-1.5 text-sm"
+        value={draft.season}
+        onChange={(e) => setDraft({ ...draft, season: e.target.value })}
+        aria-label="Temporada"
+      >
+        {SEASONS.map((season) => (
+          <option key={season.id} value={season.id}>
+            {season.label}
+          </option>
+        ))}
+      </select>
+      <div className="flex gap-2 pt-1">
+        <button type="submit" className="text-xs font-semibold text-sage-deep hover:underline">
+          Guardar
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-xs font-semibold text-ink-soft hover:underline"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  )
+}
 
 export default function Gallery({
   items,
   filters,
   onFiltersChange,
   onRemove,
+  onUpdate,
 }) {
+  const [editingId, setEditingId] = useState(null)
+
   const filtered = items.filter((item) => {
     if (filters.category !== 'todas' && item.category !== filters.category) {
       return false
@@ -111,21 +193,43 @@ export default function Gallery({
                 />
               </div>
               <div className="space-y-2 p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold leading-tight text-ink">
-                    {item.name}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => onRemove(item.id)}
-                    className="text-xs font-semibold text-clay hover:underline"
-                  >
-                    Quitar
-                  </button>
-                </div>
-                <p className="text-sm text-ink-soft">
-                  {CATEGORY_LABEL[item.category]} · {item.color}
-                </p>
+                {editingId === item.id ? (
+                  <EditForm
+                    item={item}
+                    onCancel={() => setEditingId(null)}
+                    onSave={(updates) => {
+                      onUpdate(item.id, updates)
+                      setEditingId(null)
+                    }}
+                  />
+                ) : (
+                  <>
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold leading-tight text-ink">
+                        {item.name}
+                      </h3>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setEditingId(item.id)}
+                          className="text-xs font-semibold text-sage-deep hover:underline"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onRemove(item.id)}
+                          className="text-xs font-semibold text-clay hover:underline"
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-sm text-ink-soft">
+                      {CATEGORY_LABEL[item.category]} · {item.color}
+                    </p>
+                  </>
+                )}
               </div>
             </article>
           ))}

@@ -55,6 +55,34 @@ export function useCloset() {
     setItems((prev) => [item, ...prev])
   }
 
+  function updateItem(id, updates) {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+    )
+
+    const patchPiece = (piece) =>
+      piece.id === id ? { ...piece, ...updates } : piece
+
+    setFavorites((prev) =>
+      prev.map((fav) => ({
+        ...fav,
+        superior: patchPiece(fav.superior),
+        inferior: patchPiece(fav.inferior),
+        calzado: patchPiece(fav.calzado),
+      }))
+    )
+
+    setOutfit((current) => {
+      if (!current) return current
+      return {
+        ...current,
+        superior: patchPiece(current.superior),
+        inferior: patchPiece(current.inferior),
+        calzado: patchPiece(current.calzado),
+      }
+    })
+  }
+
   function loadDemo() {
     setItems((prev) => {
       const demoIds = new Set(DEMO_ITEMS.map((item) => item.id))
@@ -200,6 +228,7 @@ export function useCloset() {
     outfit,
     outfitKey,
     addItem,
+    updateItem,
     loadDemo,
     removeItem,
     generateOutfit,

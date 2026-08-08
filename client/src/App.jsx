@@ -13,6 +13,7 @@ export default function App() {
     outfit,
     outfitKey,
     addItem,
+    updateItem,
     loadDemo,
     removeItem,
     generateOutfit,
@@ -151,6 +152,10 @@ export default function App() {
             onRemove={(id) => {
               removeItem(id)
               setToast('Prenda eliminada')
+            }}
+            onUpdate={(id, updates) => {
+              updateItem(id, updates)
+              setToast('Prenda actualizada')
             }}
           />
           <OutfitGenerator

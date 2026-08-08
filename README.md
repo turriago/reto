@@ -51,3 +51,17 @@ cp server/.env.example server/.env
 ```
 
 Sin credenciales, el upload usa data URL y la app sigue funcionando.
+
+## Deploy en Netlify
+
+La UI se publica como sitio estático. El upload funciona sin el servidor Express (data URL local).
+
+1. Entra a [app.netlify.com](https://app.netlify.com)
+2. **Add new site → Import an existing project → GitHub**
+3. Elige `Cooweb-co/turriago-battletechcaribe1`
+4. Netlify detecta `netlify.toml`:
+   - Build command: `npm install --prefix client && npm run build --prefix client`
+   - Publish directory: `client/dist`
+5. Deploy
+
+También puedes arrastrar la carpeta `client/dist` tras correr `npm run build`.

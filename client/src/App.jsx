@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Favorites from './components/Favorites'
 import Gallery from './components/Gallery'
+import HowItWorks from './components/HowItWorks'
 import ItemForm from './components/ItemForm'
 import LookSimulator from './components/LookSimulator'
 import OutfitGenerator from './components/OutfitGenerator'
@@ -15,14 +16,12 @@ export default function App() {
     outfitKey,
     addItem,
     updateItem,
-    loadDemo,
     removeItem,
     generateOutfit,
     toggleFavorite,
     isFavorite,
     removeFavorite,
     restoreFavorite,
-    prepareSimulatorDemo,
     syncing,
     cloudReady,
     supabaseEnabled,
@@ -125,23 +124,15 @@ export default function App() {
                 Closet Matcher
               </h1>
               <p className="mt-5 max-w-md text-lg leading-relaxed text-porcelain/90 italic md:text-xl">
-                Combina lo que ya tienes. Cada mañana, un look nuevo sin
-                comprar de más.
+                Toma fotos de tu ropa, genera combinaciones y simúlalas en ti —
+                para decidir mejor qué ponerte o qué comprar.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  className="btn-hero"
-                  onClick={() => {
-                    loadDemo()
-                    setToast('Demo cargada: 6 prendas listas')
-                    window.location.hash = 'outfit'
-                  }}
-                >
-                  Cargar demo rápida
-                </button>
-                <a href="#agregar" className="btn-ghost">
-                  Agregar prenda
+                <a href="#agregar" className="btn-hero">
+                  Empezar con mis fotos
+                </a>
+                <a href="#como-funciona" className="btn-ghost">
+                  Cómo funciona
                 </a>
               </div>
             </div>
@@ -149,6 +140,7 @@ export default function App() {
         </section>
 
         <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-14 md:gap-20 md:px-6 md:py-20">
+          <HowItWorks />
           <ItemForm
             onAdd={(item) => {
               addItem(item)
@@ -178,18 +170,11 @@ export default function App() {
           />
           <LookSimulator
             outfit={outfit}
-            onPrepareDemo={async () => {
-              const result = await prepareSimulatorDemo({
-                color: filters.color,
-                season: filters.season,
-              })
-              if (result.ok) {
-                setOutfitMessage('')
-                setToast('Demo lista: fotos + outfit para simular')
-              } else {
-                setToast(result.message)
-              }
+            onNeedOutfit={() => {
+              window.location.hash = 'outfit'
+              setToast('Genera un outfit con tus prendas y vuelve a Simulación')
             }}
+            onToast={setToast}
           />
           <Favorites
             favorites={favorites}

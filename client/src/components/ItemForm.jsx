@@ -99,6 +99,7 @@ export default function ItemForm({ onAdd }) {
           <input
             type="file"
             accept="image/*"
+            capture="environment"
             className="sr-only"
             onChange={handleFileChange}
           />

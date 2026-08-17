@@ -1,11 +1,17 @@
 import { CATEGORY_LABEL } from '../lib/constants'
 
 function Piece({ item, label, delay }) {
+  const fromStore = item.source === 'store'
   return (
     <div
-      className="garment-tile animate-outfit"
+      className="garment-tile animate-outfit relative"
       style={{ animationDelay: `${delay}ms` }}
     >
+      {fromStore && (
+        <div className="absolute top-3 left-3 z-10 rounded-md bg-ink/80 px-2 py-1 font-display text-[0.65rem] font-semibold tracking-[0.14em] text-porcelain uppercase backdrop-blur-sm">
+          Tienda
+        </div>
+      )}
       <div className="aspect-[4/5] overflow-hidden bg-mist">
         <img
           src={item.imageUrl}
@@ -16,6 +22,7 @@ function Piece({ item, label, delay }) {
       <div className="p-4">
         <p className="font-display text-[0.7rem] font-semibold tracking-[0.18em] text-saffron uppercase">
           {label}
+          {fromStore ? ' · tienda' : ''}
         </p>
         <h3 className="mt-1 font-display text-lg font-semibold text-ink">
           {item.name}

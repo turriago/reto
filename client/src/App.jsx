@@ -1,27 +1,32 @@
 import { useEffect, useState } from 'react'
 import Favorites from './components/Favorites'
 import Gallery from './components/Gallery'
-import HowItWorks from './components/HowItWorks'
 import ItemForm from './components/ItemForm'
 import LookSimulator from './components/LookSimulator'
 import OutfitGenerator from './components/OutfitGenerator'
+import StoreCloset from './components/StoreCloset'
 import Toast from './components/Toast'
+import { STORE_ITEMS } from './lib/demoData'
 import { useCloset } from './hooks/useCloset'
 
 export default function App() {
   const {
     items,
+    storeItems,
     favorites,
     outfit,
     outfitKey,
     addItem,
     updateItem,
+    loadDemo,
     removeItem,
     generateOutfit,
     toggleFavorite,
     isFavorite,
     removeFavorite,
     restoreFavorite,
+    prepareSimulatorDemo,
+    applyStorePiece,
     syncing,
     cloudReady,
     supabaseEnabled,
@@ -35,10 +40,12 @@ export default function App() {
   const [outfitMessage, setOutfitMessage] = useState('')
   const [toast, setToast] = useState('')
   const [scrolled, setScrolled] = useState(false)
+  const [triedStoreId, setTriedStoreId] = useState('')
+  const [autoDemoKey, setAutoDemoKey] = useState(0)
 
   useEffect(() => {
     if (!toast) return undefined
-    const timer = setTimeout(() => setToast(''), 2600)
+    const timer = setTimeout(() => setToast(''), 3200)
     return () => clearTimeout(timer)
   }, [toast])
 
@@ -49,6 +56,35 @@ export default function App() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Carga automática al abrir: closet personal + outfit mixto + simulación
+  useEffect(() => {
+    let cancelled = false
+
+    async function bootDemo() {
+      await loadDemo()
+      if (cancelled) return
+      const result = await prepareSimulatorDemo({
+        color: 'Todos',
+        season: 'todas',
+      })
+      if (cancelled || !result.ok) return
+
+      const storePiece = STORE_ITEMS.find((item) => item.category === 'superior')
+      if (storePiece) {
+        applyStorePiece(storePiece, { color: 'Todos', season: 'todas' }, result.outfit)
+        setTriedStoreId(storePiece.id)
+      }
+      setAutoDemoKey((key) => key + 1)
+      setToast('Demo lista: baja a Galería, Tienda y Simulación')
+    }
+
+    bootDemo()
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handleGenerate() {
@@ -65,6 +101,52 @@ export default function App() {
     const wasFavorite = isFavorite(outfit)
     toggleFavorite(outfit)
     setToast(wasFavorite ? 'Quitado de favoritos' : 'Outfit guardado en favoritos')
+  }
+
+  async function handleLoadFullDemo() {
+    await loadDemo()
+    const result = await prepareSimulatorDemo({
+      color: filters.color,
+      season: filters.season,
+    })
+    if (result.ok) {
+      const storePiece = STORE_ITEMS.find((item) => item.category === 'superior')
+      if (storePiece) {
+        applyStorePiece(
+          storePiece,
+          {
+            color: filters.color,
+            season: filters.season,
+          },
+          result.outfit
+        )
+        setTriedStoreId(storePiece.id)
+      }
+      setOutfitMessage('')
+      setAutoDemoKey((key) => key + 1)
+      setToast('Demo lista: tu closet + tienda + simulación')
+      setTimeout(() => {
+        document.getElementById('galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 150)
+    } else {
+      setToast(result.message)
+    }
+  }
+
+  function handleTryStorePiece(piece) {
+    const result = applyStorePiece(piece, {
+      color: filters.color,
+      season: filters.season,
+    })
+    if (!result.ok) {
+      setToast(result.message)
+      return
+    }
+    setTriedStoreId(piece.id)
+    setOutfitMessage('')
+    setAutoDemoKey((key) => key + 1)
+    setToast(`Probando “${piece.name}” de la tienda en tu look`)
+    window.location.hash = 'simulador'
   }
 
   return (
@@ -88,6 +170,9 @@ export default function App() {
             </a>
             <a href="#galeria" className="opacity-85 hover:opacity-100">
               Galería
+            </a>
+            <a href="#tienda" className="opacity-85 hover:opacity-100">
+              Tienda
             </a>
             <a href="#outfit" className="opacity-85 hover:opacity-100">
               Outfit
@@ -124,15 +209,19 @@ export default function App() {
                 Closet Matcher
               </h1>
               <p className="mt-5 max-w-md text-lg leading-relaxed text-porcelain/90 italic md:text-xl">
-                Toma fotos de tu ropa, genera combinaciones y simúlalas en ti —
-                para decidir mejor qué ponerte o qué comprar.
+                Combina lo que ya tienes. Cada mañana, un look nuevo sin
+                comprar de más.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#agregar" className="btn-hero">
-                  Empezar con mis fotos
-                </a>
-                <a href="#como-funciona" className="btn-ghost">
-                  Cómo funciona
+                <button
+                  type="button"
+                  className="btn-hero"
+                  onClick={handleLoadFullDemo}
+                >
+                  Cargar demo rápida
+                </button>
+                <a href="#agregar" className="btn-ghost">
+                  Agregar prenda
                 </a>
               </div>
             </div>
@@ -140,7 +229,6 @@ export default function App() {
         </section>
 
         <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-14 md:gap-20 md:px-6 md:py-20">
-          <HowItWorks />
           <ItemForm
             onAdd={(item) => {
               addItem(item)
@@ -160,6 +248,11 @@ export default function App() {
               setToast('Prenda actualizada')
             }}
           />
+          <StoreCloset
+            items={storeItems}
+            highlightedId={triedStoreId}
+            onTryPiece={handleTryStorePiece}
+          />
           <OutfitGenerator
             outfit={outfit}
             outfitKey={outfitKey}
@@ -170,11 +263,19 @@ export default function App() {
           />
           <LookSimulator
             outfit={outfit}
-            onNeedOutfit={() => {
-              window.location.hash = 'outfit'
-              setToast('Genera un outfit con tus prendas y vuelve a Simulación')
+            autoDemoKey={autoDemoKey}
+            onPrepareDemo={async () => {
+              const result = await prepareSimulatorDemo({
+                color: filters.color,
+                season: filters.season,
+              })
+              if (result.ok) {
+                setOutfitMessage('')
+                setToast('Demo lista: fotos + outfit para simular')
+              } else {
+                setToast(result.message)
+              }
             }}
-            onToast={setToast}
           />
           <Favorites
             favorites={favorites}

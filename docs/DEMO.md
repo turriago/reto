@@ -1,6 +1,6 @@
 # Guion para probar Closet Matcher (usuario real)
 
-Link de la app: _(pega aquí tu URL de Netlify)_
+Link de la app: https://closet-matcher.netlify.app/
 
 ## Qué hace (en 1 frase)
 Digitalizas tu ropa, generas combinaciones y simulas el look sobre tus propias fotos.

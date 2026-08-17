@@ -114,10 +114,10 @@ export default function Gallery({
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="section-mark font-display text-xs font-semibold tracking-[0.22em] text-saffron uppercase">
-            Closet
+            Tu closet
           </p>
           <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-ink md:text-5xl">
-            Tus prendas
+            Prendas personales
           </h2>
           <p className="mt-3 text-lg text-ink-soft italic">
             {filtered.length} de {items.length} prendas visibles

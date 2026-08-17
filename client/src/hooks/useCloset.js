@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DEMO_ITEMS } from '../lib/demoData'
+import { DEMO_ITEMS, STORE_ITEMS } from '../lib/demoData'
 import {
   loadFavorites,
   loadItems,
@@ -45,6 +45,7 @@ function pickRandomOutfit(tops, bottoms, shoes, previousSignature) {
 
 export function useCloset() {
   const [items, setItems] = useState(() => loadItems())
+  const [storeItems, setStoreItems] = useState(STORE_ITEMS)
   const [favorites, setFavorites] = useState(() => loadFavorites())
   const [outfit, setOutfit] = useState(null)
   const [outfitKey, setOutfitKey] = useState(0)
@@ -84,7 +85,11 @@ export function useCloset() {
         if (cancelled) return
 
         if (garmentRows?.length) {
-          setItems(garmentRows.map(rowToItem))
+          const mapped = garmentRows.map(rowToItem)
+          const closet = mapped.filter((item) => item.source !== 'store')
+          const store = mapped.filter((item) => item.source === 'store')
+          if (closet.length) setItems(closet)
+          if (store.length) setStoreItems(store)
         }
         if (favRows?.length) {
           setFavorites(favRows.map((row) => row.payload))
@@ -148,14 +153,19 @@ export function useCloset() {
   async function loadDemo() {
     const nextItems = (() => {
       const demoIds = new Set(DEMO_ITEMS.map((item) => item.id))
-      const custom = items.filter((item) => !demoIds.has(item.id))
+      const custom = items.filter(
+        (item) => !demoIds.has(item.id) && item.source !== 'store'
+      )
       return [...DEMO_ITEMS, ...custom]
     })()
 
     setItems(nextItems)
+    setStoreItems(STORE_ITEMS)
 
     if (!supabaseEnabled) return nextItems
-    const { error } = await supabase.from('garments').upsert(DEMO_ITEMS.map(itemToRow))
+    const { error } = await supabase
+      .from('garments')
+      .upsert([...DEMO_ITEMS, ...STORE_ITEMS].map(itemToRow))
     if (error) console.warn('Supabase loadDemo:', error.message)
     return nextItems
   }
@@ -312,8 +322,33 @@ export function useCloset() {
     return generateOutfit(filters, nextItems || DEMO_ITEMS)
   }
 
+  function applyStorePiece(piece, filters = {}, baseOutfit = null) {
+    if (!piece?.category) {
+      return { ok: false, message: 'Prenda de tienda no válida' }
+    }
+
+    let base = baseOutfit || outfit
+    if (!base) {
+      const result = generateOutfit(filters)
+      if (!result.ok) return result
+      base = result.outfit
+    }
+
+    const next = {
+      ...base,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      [piece.category]: piece,
+    }
+
+    setOutfit(next)
+    setOutfitKey((k) => k + 1)
+    return { ok: true, outfit: next }
+  }
+
   return {
     items,
+    storeItems,
     favorites,
     outfit,
     outfitKey,
@@ -324,6 +359,7 @@ export function useCloset() {
     updateItem,
     loadDemo,
     prepareSimulatorDemo,
+    applyStorePiece,
     removeItem,
     generateOutfit,
     toggleFavorite,

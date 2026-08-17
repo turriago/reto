@@ -1,5 +1,8 @@
-const stamp = 'v2'
+const stamp = 'v3'
 
+export const DEMO_STORE_NAME = 'Atelier Norte'
+
+/** Closet personal de ejemplo (lo que ya tienes en casa). */
 export const DEMO_ITEMS = [
   {
     id: 'demo-top-1',
@@ -7,6 +10,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Blanco',
     season: 'todas',
+    source: 'closet',
     imageUrl: `/demo/superior-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
@@ -16,6 +20,7 @@ export const DEMO_ITEMS = [
     category: 'superior',
     color: 'Beige',
     season: 'invierno',
+    source: 'closet',
     imageUrl: `/demo/superior-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
@@ -25,6 +30,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Azul',
     season: 'todas',
+    source: 'closet',
     imageUrl: `/demo/inferior-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
@@ -34,6 +40,7 @@ export const DEMO_ITEMS = [
     category: 'inferior',
     color: 'Negro',
     season: 'todas',
+    source: 'closet',
     imageUrl: `/demo/inferior-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
@@ -43,6 +50,7 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Blanco',
     season: 'todas',
+    source: 'closet',
     imageUrl: `/demo/calzado-1.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
@@ -52,7 +60,98 @@ export const DEMO_ITEMS = [
     category: 'calzado',
     color: 'Café',
     season: 'invierno',
+    source: 'closet',
     imageUrl: `/demo/calzado-2.jpg?${stamp}`,
     createdAt: new Date().toISOString(),
   },
 ]
+
+/** Catálogo de tienda con imágenes propias (distintas al closet). */
+export const STORE_ITEMS = [
+  {
+    id: 'store-top-1',
+    name: 'Blazer lino arena',
+    category: 'superior',
+    color: 'Beige',
+    season: 'verano',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Norte Studio',
+    price: 189000,
+    imageUrl: `/demo/store-superior-1.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'store-top-2',
+    name: 'Camisa oxford crisp',
+    category: 'superior',
+    color: 'Blanco',
+    season: 'todas',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Norte Studio',
+    price: 129000,
+    imageUrl: `/demo/store-superior-2.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'store-bottom-1',
+    name: 'Wide jeans indigo',
+    category: 'inferior',
+    color: 'Azul',
+    season: 'todas',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Calle 7',
+    price: 159000,
+    imageUrl: `/demo/store-inferior-1.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'store-bottom-2',
+    name: 'Trouser negro slim',
+    category: 'inferior',
+    color: 'Negro',
+    season: 'todas',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Calle 7',
+    price: 149000,
+    imageUrl: `/demo/store-inferior-2.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'store-shoe-1',
+    name: 'Sneaker city white',
+    category: 'calzado',
+    color: 'Blanco',
+    season: 'todas',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Paso Urbano',
+    price: 219000,
+    imageUrl: `/demo/store-calzado-1.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'store-shoe-2',
+    name: 'Boot chelsea café',
+    category: 'calzado',
+    color: 'Café',
+    season: 'invierno',
+    source: 'store',
+    store: DEMO_STORE_NAME,
+    brand: 'Paso Urbano',
+    price: 279000,
+    imageUrl: `/demo/store-calzado-2.jpg?${stamp}`,
+    createdAt: new Date().toISOString(),
+  },
+]
+
+export function formatCop(amount) {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
